@@ -8,40 +8,37 @@ SCM.controllers.GameController = SCM.controllers.GameLoopController.extend {
 
   world: null
   car: null
+
   mediator: null
-  scaleFactorBinding: 'mediator.scaleFactor'
+  carDataBinding: 'mediator.car'
 
   debugMode: false
 
   init: ->
     @_super()
-    mediator = @get 'mediator'
-    world = new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0,0), true)
+    @_createWorld()
 
-    # use start point from Raphael path for car
-    path = mediator.get('track').get('path')
+    SC.run.sync()
+
+    mediator = @get 'mediator'
+    carData = @get 'carData'
 
     car = SCM.controllers.CarController.create {
-      delegate: this,
-      scaleFactor: mediator.get('scaleFactor')
+      delegate: this
+      world: @get 'world'
+      path: mediator.get('track').get('path')
+      scaleFactor: mediator.get 'scaleFactor'
+      width: carData.get 'width'
+      length: carData.get 'length'
     }
 
-    car.setPath path
-    car.createInWorld world
-
-    carData = mediator.get('car')
-    carData.set 'width', car.get('width')
-    carData.set 'length', car.get('length')
+    @set 'car', car
 
     if @get 'debugMode'
-      scaleFactor = mediator.get('scaleFactor')
-      @_setupDebugMode(world, scaleFactor)
+      @_setupDebugMode()
 
-    @set 'world', world
-    @set 'car', car
-    @set 'path', path
-
-    @start(@update)
+  start: ->
+    @_super(@update)
 
   update: (deltaT, now) ->
 
@@ -49,9 +46,7 @@ SCM.controllers.GameController = SCM.controllers.GameLoopController.extend {
     car.update(deltaT)
     car.accelerate()
 
-    carData = @get('mediator').get('car')
-
-    carData.set 'position', {
+    @get('carData').set 'position', {
       x: car.get('x'),
       y: car.get('y'),
       rotation: car.get('rotation')
@@ -62,7 +57,13 @@ SCM.controllers.GameController = SCM.controllers.GameLoopController.extend {
     world.ClearForces()
     if @get 'debugMode' then world.DrawDebugData()
 
-  _setupDebugMode: (world, scaleFactor) ->
+  _createWorld: ->
+    @set 'world', new Box2D.Dynamics.b2World( new Box2D.Common.Math.b2Vec2(0,0), true)
+
+  _setupDebugMode: ->
+    world = @get 'world'
+    scaleFactor = @get 'scaleFactor'
+
     debugDraw = new Box2D.Dynamics.b2DebugDraw()
     debugDraw.SetSprite(document.getElementById("debug-viewport").getContext("2d"))
     debugDraw.SetDrawScale(scaleFactor)

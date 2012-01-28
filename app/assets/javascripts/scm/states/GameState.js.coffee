@@ -37,10 +37,12 @@ SCM.states.GameState = SC.State.extend {
 
       SCM.gameMediator.set 'car', SC.Object.create {
         position: SC.Object.create {
-          x: 100,
-          y: 100,
+          x: 100
+          y: 100
           rotation: 30
         }
+        width: 0.75
+        length: 1.50
       }
 
       @gotoState 'Running'
@@ -52,5 +54,6 @@ SCM.states.GameState = SC.State.extend {
       SCM.gameController = SCM.controllers.GameController.create {
         mediator: SCM.gameMediator
       }
+      SCM.gameController.start()
   }
 }

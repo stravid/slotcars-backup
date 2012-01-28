@@ -1,4 +1,6 @@
 
+#= require scm/templates/game
+
 SCM = this.SCM
 
 SCM.views.GameView = SC.View.extend {

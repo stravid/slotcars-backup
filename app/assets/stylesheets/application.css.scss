@@ -5,3 +5,18 @@
   height: 600px;
   margin: 0 auto;
 }
+
+#game {
+  height: 100%;
+}
+
+#game-viewport {
+  height: 100%;
+  position: relative;
+}
+
+#debug-viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

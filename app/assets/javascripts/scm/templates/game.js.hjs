@@ -1,2 +1,9 @@
 
-<header>{{track.title}}</header>
+<header>
+  <h2>Track: {{trackData.title}}</h2>
+  <h3>By: {{trackData.author.name}}</h3>
+</header>
+
+<div id="game-viewport">
+   <canvas id="debug-viewport" width="800" height="600"></canvas>
+</div>
